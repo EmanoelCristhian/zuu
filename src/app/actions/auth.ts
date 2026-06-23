@@ -60,7 +60,7 @@ export async function loginComGoogle() {
     },
   })
 
-  if (error) return { error: error.message }
+  if (error) throw new Error(error.message)
   if (data.url) redirect(data.url)
 }
 

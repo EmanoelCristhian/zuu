@@ -2,8 +2,9 @@
 
 Plataforma SaaS de gestão de aluguéis focada em corretores autônomos e proprietários diretos. Abordagem WhatsApp-first com OCR automático de documentos, geração de contratos digitais e split de pagamento nativo.
 
-> **Última atualização do README:** 2026-05-14
-> **Fase atual:** Pré-desenvolvimento — modelagem e arquitetura
+> **Última atualização do README:** 2026-06-22
+> **Fase atual:** Semana 1 — Setup técnico e autenticação
+> **Marco-alvo:** MVP em produção com 5 usuários reais até **14/08/2026** (8 semanas)
 
 ---
 
@@ -482,53 +483,228 @@ P_total = R_prop + T_adm + T_plat + D_acess
 
 ## Cronograma
 
-> Atualizar esta seção ao concluir cada etapa ou ao revisar prioridades.
+> Cronograma diário com datas reais. Atualizar status ao final de cada dia.
+> **Meta:** MVP em produção com 5 usuários reais até **sex 14/08/2026**.
+> **Premissa:** ~3–5 h/dia de execução. Domingo é folga.
 
-### Semana 0 — Arquitetura e Planejamento ✅
+### Semana 0 — Arquitetura e Planejamento ✅ (concluída em 14/05)
 - [x] Definição do posicionamento e público-alvo
 - [x] Escolha da stack técnica
 - [x] Modelagem ERD completa
 - [x] Definição das fases do MVP
 - [x] Documentação inicial do README
+- [x] Migrations SQL escritas (enums, tabelas, RLS, triggers)
+- [x] Esqueleto Next.js + Supabase + auth (em código, não testado)
 
-### Semana 1–2 — Setup e Autenticação
-- [ ] Inicializar projeto Next.js 15
-- [ ] Configurar Supabase (projeto, Storage, Auth)
-- [ ] Criar migrations das tabelas e enums
-- [ ] Ativar RLS em todas as tabelas
-- [ ] Implementar autenticação (email/senha + Google OAuth)
-- [ ] Criar middleware de proteção de rotas por role
+---
 
-### Semana 3–4 — CRUD Core
-- [ ] CRUD de imóveis com upload de fotos
-- [ ] CRUD de perfis (locador e locatário)
-- [ ] Listagem e filtros de imóveis
-- [ ] Dashboard básico do locador
+### Semana 1 — Desbloqueio técnico e auth funcional (22–28/06) 🔴 ATUAL
 
-### Semana 5–6 — Contratos
-- [ ] Criação e edição de contratos
-- [ ] Geração de PDF de contrato (@react-pdf/renderer)
-- [ ] Área do locatário (visualização de contrato e imóvel)
-- [ ] Fluxo de convite do locatário
+**Seg 22/06** — Replanejamento e desbloqueio
+- [x] Cronograma diário realinhado para datas reais
+- [ ] Corrigir `npm run build` (erros de module not found)
+- [ ] Commitar tudo o que está pronto + abrir PR "Semana 1"
 
-### Semana 7–8 — Mensageria e Notificações
-- [ ] Chat interno locador ↔ locatário (Supabase Realtime)
-- [ ] Sistema de notificações in-app
-- [ ] E-mail transacional (Resend) para eventos críticos
+**Ter 23/06** — Supabase Cloud
+- [ ] Criar projeto Supabase Cloud
+- [ ] Rodar as 4 migrations
+- [ ] Configurar buckets Storage (`avatars`, `properties`, `documents`, `contracts`)
+- [ ] Atualizar `.env.local` com credenciais reais
 
-### Semana 9–10 — Financeiro (Fase 1b)
-- [ ] Integração Asaas (sandbox)
-- [ ] Emissão de boleto e PIX por cobrança
-- [ ] Webhooks de confirmação de pagamento
-- [ ] Split de pagamento configurado
-- [ ] Geração automática de recibos PDF
-- [ ] Cron job para cobranças mensais
+**Qua 24/06** — OAuth e fluxo de auth
+- [ ] Configurar Google OAuth no Supabase
+- [ ] Testar login/cadastro/Google end-to-end
+- [ ] Criar páginas `/recuperar-senha` e `/atualizar-senha`
 
-### Semana 11–12 — Testes, Ajustes e Deploy
-- [ ] Testes de fluxo completo (contrato → cobrança → pagamento → recibo)
-- [ ] Revisão de RLS e segurança
-- [ ] Deploy em produção (Vercel + Supabase Cloud)
-- [ ] Onboarding dos primeiros usuários piloto
+**Qui 25/06** — Layout autenticado
+- [ ] Sidebar com navegação por role (locador vs locatário)
+- [ ] Header com avatar + logout
+- [ ] Página `/perfil` (editar nome, foto, telefone)
+
+**Sex 26/06** — Dados específicos por role
+- [ ] Formulário de dados bancários do locador (PIX, banco, agência)
+- [ ] Formulário de dados pessoais do locatário (RG, profissão, renda)
+- [ ] Abrir PR "Semana 1 — Auth e perfis"
+
+**Sáb 27/06** — Decisões estratégicas
+- [ ] Comprar domínios (`zuu.com.br` + `zuu.app`)
+- [ ] Definir cidade-alvo para os 5 primeiros usuários
+- [ ] Escolher cor primária e logotipo simples
+- [ ] Abrir CNPJ MEI (ou agendar)
+
+**Dom 28/06** — Folga
+
+---
+
+### Semana 2 — CRUD de Imóveis (29/06–05/07)
+
+**Seg 29/06** — Schema de formulário e validação
+- [ ] Formulário completo de cadastro de imóvel
+- [ ] Auto-complete de CEP (API ViaCEP)
+
+**Ter 30/06** — Upload de fotos
+- [ ] Upload múltiplo via Supabase Storage
+- [ ] Reordenação por drag-and-drop
+- [ ] Compressão client-side antes do upload
+
+**Qua 01/07** — Listagem
+- [ ] Grid de imóveis do locador
+- [ ] Filtros: status, tipo, cidade
+
+**Qui 02/07** — Edição e exclusão
+- [ ] Página de edição
+- [ ] Confirmação de exclusão com modal
+
+**Sex 03/07** — Detalhes do imóvel
+- [ ] Página `/imoveis/[id]` com galeria
+- [ ] Indicadores: contratos ativos, histórico
+
+**Sáb 04/07** — Buffer + PR "Semana 2 — Imóveis"
+**Dom 05/07** — Folga
+
+---
+
+### Semana 3 — Contratos (06–12/07)
+
+**Seg 06/07** — Formulário de contrato
+- [ ] Vincular imóvel + locatário existente
+
+**Ter 07/07** — Convite de locatário novo
+- [ ] Convite por e-mail (Resend) com link mágico
+- [ ] Página de aceite do convite
+
+**Qua 08/07** — Geração de PDF
+- [ ] Template de contrato em `@react-pdf/renderer`
+- [ ] Upload do PDF gerado para Storage
+
+**Qui 09/07** — Listagem e detalhes
+- [ ] `/contratos` (visão locador)
+- [ ] `/contratos/[id]` com download PDF
+
+**Sex 10/07** — Visão do locatário
+- [ ] `/minha-area/contrato` (visualização do contrato ativo)
+
+**Sáb 11/07** — Buffer + PR "Semana 3 — Contratos"
+**Dom 12/07** — Folga
+
+---
+
+### Semana 4 — Dashboard e Comunicação (13–19/07)
+
+**Seg 13/07** — Dashboard do locador (real)
+- [ ] Queries agregadas: contratos ativos, MRR estimado, inadimplência
+
+**Ter 14/07** — Área do locatário
+- [ ] Visão de cobranças, documentos, histórico
+
+**Qua 15/07** — Notificações in-app
+- [ ] Badge + dropdown + página `/notificacoes`
+
+**Qui 16/07** — Chat em tempo real
+- [ ] Lista de conversas por contrato
+- [ ] Subscription Supabase Realtime
+
+**Sex 17/07** — Anexos no chat
+- [ ] Envio de imagem e documento via Storage
+
+**Sáb 18/07** — Buffer + PR "Semana 4 — Comunicação"
+**Dom 19/07** — Folga
+
+---
+
+### Semana 5 — Asaas e Cobranças (20–26/07)
+
+**Seg 20/07** — Setup Asaas
+- [ ] Criar cliente Asaas a partir do locatário
+- [ ] Service de geração de cobrança PIX/boleto
+
+**Ter 21/07** — Webhook de pagamento
+- [ ] Endpoint `/api/webhooks/asaas`
+- [ ] Validação de assinatura
+
+**Qua 22/07** — Split de pagamento
+- [ ] Configurar wallet do locador
+- [ ] Regras de split (taxa Zuu + repasse)
+
+**Qui 23/07** — Recibo PDF
+- [ ] Geração automática após `paid_at`
+- [ ] Envio por e-mail (Resend)
+
+**Sex 24/07** — Histórico financeiro
+- [ ] Página `/financeiro` (locador)
+- [ ] Página `/minhas-cobrancas` (locatário)
+
+**Sáb 25/07** — Buffer + PR "Semana 5 — Pagamentos"
+**Dom 26/07** — Folga
+
+---
+
+### Semana 6 — Automação e Cron Jobs (27/07–02/08)
+
+**Seg 27/07** — Cron de cobranças mensais
+- [ ] Vercel Cron Job: gerar `charges` no dia 1 de cada mês
+
+**Ter 28/07** — Alertas de vencimento
+- [ ] 3 dias antes, dia do vencimento, atraso
+
+**Qua 29/07** — E-mails transacionais
+- [ ] Templates Resend: cobrança emitida, pagamento confirmado, contrato vencendo
+
+**Qui 30/07** — Atualização automática de status
+- [ ] Job diário para marcar `overdue` e `expired`
+
+**Sex 31/07** — Página inicial pública
+- [ ] Landing page simples explicando o ZUU
+- [ ] CTA para cadastro
+
+**Sáb 01/08** — Buffer + PR "Semana 6 — Automação"
+**Dom 02/08** — Folga
+
+---
+
+### Semana 7 — Hardening e Deploy (03–09/08)
+
+**Seg 03/08** — Auditoria de RLS
+- [ ] Tentar burlar permissões como cada role (locador, locatário, admin)
+
+**Ter 04/08** — Logs e erros
+- [ ] Estruturar logs + integração com Sentry
+
+**Qua 05/08** — Deploy Vercel
+- [ ] Configurar projeto Vercel + variáveis de ambiente
+- [ ] Domínio + DNS
+
+**Qui 06/08** — Supabase Cloud em produção
+- [ ] Plano Pro Supabase (se necessário) + backup configurado
+
+**Sex 07/08** — Testes E2E manuais
+- [ ] Fluxo completo: cadastro → imóvel → contrato → cobrança → pagamento → recibo
+
+**Sáb 08/08** — Correções finais
+**Dom 09/08** — Folga
+
+---
+
+### Semana 8 — Validação real (10–14/08) 🎯 MARCO
+
+**Seg 10/08** — Onboarding piloto 1
+- [ ] Eu mesmo cadastro 1 contrato real
+
+**Ter 11/08** — Onboarding piloto 2 e 3
+- [ ] 2 amigos/conhecidos como primeiros locadores
+
+**Qua 12/08** — Onboarding piloto 4 e 5
+- [ ] Mais 2 locadores via indicação
+
+**Qui 13/08** — Acompanhamento
+- [ ] Coletar feedback diário, corrigir bugs P0
+
+**Sex 14/08** — 🏁 MARCO
+- [ ] MVP em produção com **5 usuários reais ativos**
+- [ ] Retrospectiva da fase 1
+- [ ] Planejamento da Fase 2 (WhatsApp + OCR)
+
+---
 
 ### Backlog — Fase 2 (pós-MVP)
 - [ ] WhatsApp (Evolution API / Z-API)
@@ -557,6 +733,8 @@ Registro de decisões técnicas relevantes para referência futura.
 | 2026-05-14 | RLS no banco desde o dia 1 | Segurança independente do frontend; evita reescrever permissões depois |
 | 2026-05-14 | Pay-per-use como modelo inicial | Baixa barreira de entrada; usuário sente valor antes de pagar mensalidade fixa |
 | 2026-05-14 | @react-pdf/renderer para contratos | Geração no servidor Next.js sem dependência externa |
+| 2026-05-15 | Cronograma diário com marco de produção em 10/07/2026 | Substituir o cronograma semanal por metas diárias rastreáveis; ancorar o projeto em datas reais para evitar drift |
+| 2026-06-22 | Cronograma reancorado: marco de produção em 14/08/2026 | Realinhar com a data real de retomada do projeto; manter as 8 semanas de execução |
 
 ---
 

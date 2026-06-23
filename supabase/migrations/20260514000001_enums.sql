@@ -1,0 +1,15 @@
+create type user_role as enum ('admin', 'locador', 'locatario');
+create type property_type as enum ('apartment', 'house', 'room', 'commercial', 'land');
+create type property_status as enum ('available', 'rented', 'reserved', 'maintenance');
+create type contract_status as enum ('draft', 'pending_signature', 'active', 'terminated', 'expired');
+create type adjustment_index as enum ('igpm', 'ipca', 'ivar', 'inpc');
+create type guarantee_type as enum ('deposit', 'guarantor', 'insurance', 'none');
+create type charge_type as enum ('rent', 'condo', 'iptu', 'fine', 'repair', 'other');
+create type charge_status as enum ('pending', 'paid', 'overdue', 'cancelled');
+create type payment_method as enum ('pix', 'boleto', 'transfer', 'cash');
+create type document_type as enum ('rg', 'cpf', 'cnh', 'income_proof', 'contract', 'inspection', 'other');
+create type message_type as enum ('text', 'image', 'document');
+create type notification_type as enum ('charge_due', 'charge_paid', 'contract_expiring', 'new_message', 'maintenance', 'other');
+create type maintenance_status as enum ('open', 'in_progress', 'resolved', 'cancelled');
+create type maintenance_priority as enum ('low', 'medium', 'high', 'urgent');
+create type media_type as enum ('photo', 'video', 'document');

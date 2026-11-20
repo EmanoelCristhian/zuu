@@ -37,15 +37,6 @@ export async function cadastro(data: CadastroInput) {
   if (error) return { error: error.message }
   if (!authData.user) return { error: 'Erro ao criar usuário' }
 
-  const { error: profileError } = await supabase.from('profiles').insert({
-    id: authData.user.id,
-    name: data.name,
-    role: data.role,
-    phone: data.phone ?? null,
-  })
-
-  if (profileError) return { error: profileError.message }
-
   revalidatePath('/', 'layout')
   redirect('/dashboard')
 }

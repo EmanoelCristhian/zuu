@@ -11,20 +11,6 @@ export async function GET(request: Request) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error && data.user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', data.user.id)
-        .single()
-
-      if (!profile) {
-        await supabase.from('profiles').insert({
-          id: data.user.id,
-          name: data.user.user_metadata.full_name ?? data.user.email,
-          role: 'locador',
-        })
-      }
-
       return NextResponse.redirect(`${origin}${next}`)
     }
   }

@@ -64,13 +64,15 @@ Esperado: políticas criadas. No **Table Editor**, cada tabela deve mostrar o í
 Abra `supabase/migrations/20260514000004_triggers.sql`, cole e rode.
 Esperado: 2 funções criadas (`handle_new_user`, `set_updated_at`) + triggers.
 
+> A 5ª migration (`20260623000001_storage_policies.sql`) é rodada no passo 4.1, depois que os buckets existirem.
+
 ---
 
-## Passo 4 — Configurar os 4 buckets Storage (8 min)
+## Passo 4 — Criar os 4 buckets Storage (5 min)
 
 Vá em **Storage** (ícone de pasta na barra lateral) → **New bucket**.
 
-Crie cada um:
+Crie os 4 buckets na UI (só a criação — policies a gente faz via SQL no passo 4.1):
 
 | Bucket | Public | Allowed MIME types | File size limit |
 |---|---|---|---|
@@ -81,29 +83,46 @@ Crie cada um:
 
 **Por que cada um:**
 - `avatars` + `properties` são públicos para servir imagens via CDN sem assinar URL
-- `documents` + `contracts` privados — só o dono acessa via signed URL
+- `documents` + `contracts` privados — só as partes autorizadas acessam via signed URL
 
-### Policies de Storage (rápidas)
+### 4.1 Policies via SQL — pula a UI inteira (3 min)
 
-Para cada bucket privado (`documents`, `contracts`), em **Storage → Policies → New policy**:
+Criar 16 policies clicando em modais é doloroso e fácil de errar. **Skip a UI** e rode o SQL pronto.
 
+No **SQL Editor → New query**, cole o conteúdo de `supabase/migrations/20260623000001_storage_policies.sql` e rode.
+
+Isso cria 14 policies cobrindo:
+
+| Bucket | SELECT | INSERT | UPDATE | DELETE |
+|---|---|---|---|---|
+| `avatars` | público | dono (`auth.uid()`) | dono | dono |
+| `properties` | público | locador do imóvel | locador do imóvel | locador do imóvel |
+| `documents` | dono | dono | — | dono |
+| `contracts` | locador OU locatário do contrato | locador | locador | — |
+
+**Convenção de caminhos no Storage:**
+- `avatars/{user_id}/avatar.jpg`
+- `properties/{property_id}/1.jpg`, `properties/{property_id}/2.jpg`...
+- `documents/{user_id}/{document_id}.pdf`
+- `contracts/{contract_id}/contrato.pdf`
+
+Essa convenção é o que faz as policies funcionarem — a primeira pasta do caminho é o ID de quem tem permissão.
+
+### Validação rápida
+
+No SQL Editor:
 ```sql
--- Permite que o usuário acesse apenas seus próprios arquivos
--- (path do arquivo começa com o user.id)
-
--- SELECT
-((bucket_id = 'documents') AND ((storage.foldername(name))[1] = auth.uid()::text))
-
--- INSERT
-((bucket_id = 'documents') AND ((storage.foldername(name))[1] = auth.uid()::text))
-
--- DELETE
-((bucket_id = 'documents') AND ((storage.foldername(name))[1] = auth.uid()::text))
+select policyname, cmd
+from pg_policies
+where schemaname = 'storage' and tablename = 'objects'
+order by policyname;
 ```
 
-Repita para `contracts`.
-
-Para buckets públicos (`avatars`, `properties`), as policies já vêm permissivas por padrão — pode pular.
+Deve listar 14 linhas:
+- 4 do `avatars` (select, insert, update, delete)
+- 4 do `properties` (select, insert, update, delete)
+- 3 do `documents` (select, insert, delete)
+- 3 do `contracts` (select, insert, update)
 
 ---
 
